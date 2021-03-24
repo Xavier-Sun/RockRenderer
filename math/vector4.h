@@ -56,7 +56,7 @@ inline const Vector4 operator*(const Vector4 &lhs, float rhs)
 {
     return Vector4(lhs.get_x() * rhs,
                    lhs.get_y() * rhs,
-                   lhs.get_y() * rhs,
+                   lhs.get_z() * rhs,
                    lhs.get_w() * rhs);
 }
 
@@ -64,7 +64,7 @@ inline const Vector4 operator/(const Vector4 &lhs, float rhs)
 {
     return Vector4(lhs.get_x() / rhs,
                    lhs.get_y() / rhs,
-                   lhs.get_y() / rhs,
+                   lhs.get_z() / rhs,
                    lhs.get_w() / rhs);
 }
 

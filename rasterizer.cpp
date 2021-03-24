@@ -21,24 +21,25 @@ Vector4 fragment_shader_default(const v2f &in)
 
 void Rasterizer::draw() const
 {
-    v2f v2fs[vertices.size()];
+    size_t vertexNum = vertices.size();
 
-    for (size_t i = 0; i < vertices.size(); ++i)
+    std::vector<v2f> vertex_cache(vertexNum);
+
+    for (size_t i = 0; i < vertexNum; ++i)
     {
-        v2fs[i] = vertex_shader(vertices[i]);
+        v2f &vert = vertex_cache[i];
 
-        int frame_buffer_width_half = frame_buffer->get_width() / 2;
-        int frame_buffer_height_half = frame_buffer->get_height() / 2;
+        vert = vertex_shader(vertices[i]);
 
-        v2fs[i].position.set_x(v2fs[i].position.get_x() * frame_buffer_width_half + frame_buffer_width_half);
-        v2fs[i].position.set_y(v2fs[i].position.get_y() * frame_buffer_height_half + frame_buffer_height_half);
+        vert.position.set_x(vertex_cache[i].position.get_x() * frame_buffer->get_width() / 2 + frame_buffer->get_width() / 2);
+        vert.position.set_y(vertex_cache[i].position.get_y() * frame_buffer->get_height() / 2 + frame_buffer->get_height() / 2);
     }
 
-    for (size_t i = 0; i < vertices.size(); i += 3)
+    for (size_t i = 0; i < vertexNum; i += 3)
     {
-        v2f v1 = v2fs[i + 0];
-        v2f v2 = v2fs[i + 1];
-        v2f v3 = v2fs[i + 2];
+        v2f v1 = vertex_cache[i + 0];
+        v2f v2 = vertex_cache[i + 1];
+        v2f v3 = vertex_cache[i + 2];
 
         Vector2 v1_pos(v1.position.get_x(), v1.position.get_y());
         Vector2 v2_pos(v2.position.get_x(), v2.position.get_y());
@@ -53,13 +54,13 @@ void Rasterizer::draw() const
         {
             for (size_t screen_y = y_min; screen_y < y_max; ++screen_y)
             {
-                Vector2 pixel_position(screen_x + 0.5f, screen_y + 0.5f);
+                Vector2 pixel_coord(screen_x + 0.5f, screen_y + 0.5f);
 
-                if (point_in_triangle(pixel_position, v1_pos, v2_pos, v3_pos))
+                if (point_in_triangle(pixel_coord, v1_pos, v2_pos, v3_pos))
                 {
                     v2f pixel;
 
-                    Vector3 weights = get_barycentric_coordinate(pixel_position, v1_pos, v2_pos, v3_pos);
+                    Vector3 weights = get_barycentric_coordinate(pixel_coord, v1_pos, v2_pos, v3_pos);
 
                     pixel.position = v1.position * weights.get_x() + v2.position * weights.get_y() + v3.position * weights.get_z();
                     pixel.color = v1.color * weights.get_x() + v2.color * weights.get_y() + v3.color * weights.get_z();
