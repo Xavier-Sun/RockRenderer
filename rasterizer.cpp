@@ -35,6 +35,8 @@ void Rasterizer::draw() const
         vert.position.set_y(vertex_cache[i].position.get_y() * frame_buffer->get_height() / 2 + frame_buffer->get_height() / 2);
     }
 
+    std::vector<float> z_buffer(frame_buffer->get_width() * frame_buffer->get_height(), -1000.0f);
+
     for (size_t i = 0; i < vertexNum; i += 3)
     {
         v2f v1 = vertex_cache[i + 0];
@@ -67,7 +69,12 @@ void Rasterizer::draw() const
 
                     Vector4 color = fragment_shader(pixel);
 
-                    frame_buffer->set_pixel(screen_x, screen_y, color);
+                    if (pixel.position.get_z() > z_buffer[screen_x + screen_y * frame_buffer->get_width()])
+                    {
+                        frame_buffer->set_pixel(screen_x, screen_y, color);
+
+                        z_buffer[screen_x + screen_y * frame_buffer->get_width()] = pixel.position.get_z();
+                    }
                 }
             }
         }

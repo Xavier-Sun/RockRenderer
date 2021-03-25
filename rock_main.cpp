@@ -35,9 +35,24 @@ int main()
     v3.position = Vector3(0.5f, -0.5f, 0.0f);
     v3.color = Vector4(0.0f, 0.0f, 255.0f, 255.0f);
 
+    appdata v4;
+    v4.position = Vector3(-0.5f, 0.0f, 1.0f);
+    v4.color = Vector4(255.0f, 0.0f, 0.0f, 255.0f);
+
+    appdata v5;
+    v5.position = Vector3(0.0f, 1.0f, 1.0f);
+    v5.color = Vector4(0.0f, 255.0f, 0.0f, 255.0f);
+
+    appdata v6;
+    v6.position = Vector3(0.5f, 0.0f, -1.0f);
+    v6.color = Vector4(0.0f, 0.0f, 255.0f, 255.0f);
+
     rasterizer.add_vertex(v1);
     rasterizer.add_vertex(v2);
     rasterizer.add_vertex(v3);
+    rasterizer.add_vertex(v4);
+    rasterizer.add_vertex(v5);
+    rasterizer.add_vertex(v6);
 
     frame_buffer.set_clear_color(Vector4(255.0f, 255.0f, 255.0f, 255.0f));
     
