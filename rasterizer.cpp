@@ -69,11 +69,19 @@ void Rasterizer::draw() const
 
                     Vector4 color = fragment_shader(pixel);
 
-                    if (pixel.position.get_z() > z_buffer[screen_x + screen_y * frame_buffer->get_width()])
+                    if (z_buffer_enabled)
+                    {
+                        float &origin_z_value = z_buffer[screen_x + screen_y * frame_buffer->get_width()];
+                        if (pixel.position.get_z() > origin_z_value)
+                        {
+                            frame_buffer->set_pixel(screen_x, screen_y, color);
+
+                            origin_z_value = pixel.position.get_z();
+                        }
+                    }
+                    else
                     {
                         frame_buffer->set_pixel(screen_x, screen_y, color);
-
-                        z_buffer[screen_x + screen_y * frame_buffer->get_width()] = pixel.position.get_z();
                     }
                 }
             }
@@ -90,7 +98,8 @@ void Rasterizer::add_vertex(const appdata &p_vertex)
 
 Rasterizer::Rasterizer() : vertex_shader(vertex_shader_default),
                            fragment_shader(fragment_shader_default),
-                           frame_buffer(NULL)
+                           frame_buffer(NULL),
+                           z_buffer_enabled(false)
 {
 }
 

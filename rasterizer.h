@@ -43,6 +43,9 @@ public:
     void set_vertex_shader(vertex_shader_func p_vertex_shader) { vertex_shader = p_vertex_shader; }
     void set_fragment_shader(fragment_shader_func p_fragment_shader) { fragment_shader = p_fragment_shader; }
 
+    bool is_z_buffer_enabled() const { return z_buffer_enabled; }
+    void set_z_buffer(bool enable) { z_buffer_enabled = enable; }
+
     explicit Rasterizer();
     ~Rasterizer();
 
@@ -53,6 +56,8 @@ private:
 
     vertex_shader_func vertex_shader;
     fragment_shader_func fragment_shader;
+
+    bool z_buffer_enabled;
 };
 
 #endif
